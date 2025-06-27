@@ -7,6 +7,7 @@
     body { font-family: sans-serif; padding: 20px; }
     input, button { margin: 5px 0; padding: 8px; width: 300px; }
     label { display: block; margin-top: 10px; }
+    #statusMsg { margin-top: 15px; font-weight: bold; color: green; }
   </style>
 </head>
 <body>
@@ -32,7 +33,7 @@
     <button onclick="saveNickname()">💾 บันทึกชื่อเล่น</button>
   </div>
 
-  <p id="statusMsg" style="color:green;"></p>
+  <p id="statusMsg"></p>
 
   <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbzpiMi_AWfAatYujg1Def_ME5FGWjaBH762eOvAkGVKEvHgAe0OayN0sQeZ0sa1goKw/exec';
@@ -49,7 +50,7 @@
         const data = await res.json();
 
         if (!data || data.error || !data['รหัสนักเรียน']) {
-          document.getElementById('statusMsg').textContent = "ไม่พบนักเรียนในระบบ";
+          document.getElementById('statusMsg').textContent = "❌ ไม่พบนักเรียนในระบบ";
           document.getElementById('resultSection').style.display = "none";
         } else {
           document.getElementById('studentCode').value = data['รหัสนักเรียน'];
@@ -61,7 +62,7 @@
         }
       } catch (error) {
         console.error(error);
-        document.getElementById('statusMsg').textContent = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
+        document.getElementById('statusMsg').textContent = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ";
       }
     }
 
@@ -74,36 +75,27 @@
         return;
       }
 
+      const formData = new URLSearchParams();
+      formData.append('idCard', idCard);
+      formData.append('nickname', nickname);
+      formData.append('action', 'updateNickname');
+
       try {
-const googleAppsScriptUrl = API_URL ;
-
-async function saveFormData() {
-    const idCard = document.getElementById("idCard").value;
-    const nickname = document.getElementById("nickname").value;
-    const studentCode = document.getElementById("studentCode").value;
-
-    const urlEncodedData = new URLSearchParams();
-    urlEncodedData.append("idCard", idCard);
-    urlEncodedData.append("nickname", nickname);
-    urlEncodedData.append("studentCode", studentCode);
-
-    try {
-        await fetch(googleAppsScriptUrl, {
-            method: 'POST',
-            mode: 'no-cors', // CORS-safe, but cannot read response
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: urlEncodedData
+        await fetch(API_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formData
         });
 
-        alert("✅ ส่งข้อมูลเรียบร้อย (ไม่สามารถยืนยันผลตอบกลับได้เพราะ CORS)");
-    } catch (error) {
-        console.error("เกิดข้อผิดพลาด", error);
+        alert("✅ บันทึกชื่อเล่นแล้ว (แบบเงียบ)");
+        document.getElementById('statusMsg').textContent = "✔️ ส่งข้อมูลแล้ว";
+      } catch (error) {
+        console.error(error);
         alert("❌ ไม่สามารถส่งข้อมูลได้");
-    }
-}
-
+      }
     }
   </script>
 </body>
