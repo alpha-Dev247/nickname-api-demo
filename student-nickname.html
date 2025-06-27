@@ -36,36 +36,67 @@
   <p id="statusMsg"></p>
 
   <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxWy8oZXoHDLLIFmihUq3PeowAMzUCmD4hGSdvFJJJJBc_jLnZjQrHc0RCSWe64tKZj/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxWy8oZXoHDLLIFmihUq3PeowAMzUCmD4hGSdvFJJJJBc_jLnZjQrHc0RCSWe64tKZj/exec';
 
-  async function searchStudent() {
-    const idCard = document.getElementById('idCard').value.trim();
-    if (!idCard) {
-      alert("กรุณากรอกเลขบัตรประชาชน");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API_URL}?idCard=${idCard}`);
-      const data = await res.json();
-
-      if (!data || data.error || !data['รหัสนักเรียน']) {
-        document.getElementById('statusMsg').textContent = "❌ ไม่พบนักเรียนในระบบ";
-        document.getElementById('resultSection').style.display = "none";
-      } else {
-        document.getElementById('studentCode').value = data['รหัสนักเรียน'];
-        document.getElementById('firstName').value = data['ชื่อจริง'];
-        document.getElementById('lastName').value = data['นามสกุล'];
-        document.getElementById('nickname').value = data['ชื่อเล่น'] || '';
-        document.getElementById('resultSection').style.display = "block";
-        document.getElementById('statusMsg').textContent = '';
+    async function searchStudent() {
+      const idCard = document.getElementById('idCard').value.trim();
+      if (!idCard) {
+        alert("กรุณากรอกเลขบัตรประชาชน");
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      document.getElementById('statusMsg').textContent = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ";
-    }
-  }
-</script>
 
+      try {
+        const res = await fetch(`${API_URL}?idCard=${idCard}`);
+        const data = await res.json();
+
+        if (!data || data.error || !data['รหัสนักเรียน']) {
+          document.getElementById('statusMsg').textContent = "❌ ไม่พบนักเรียนในระบบ";
+          document.getElementById('resultSection').style.display = "none";
+        } else {
+          document.getElementById('studentCode').value = data['รหัสนักเรียน'];
+          document.getElementById('firstName').value = data['ชื่อจริง'];
+          document.getElementById('lastName').value = data['นามสกุล'];
+          document.getElementById('nickname').value = data['ชื่อเล่น'] || '';
+          document.getElementById('resultSection').style.display = "block";
+          document.getElementById('statusMsg').textContent = '';
+        }
+      } catch (error) {
+        console.error(error);
+        document.getElementById('statusMsg').textContent = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ";
+      }
+    }
+
+    async function saveNickname() {
+      const idCard = document.getElementById('idCard').value.trim();
+      const nickname = document.getElementById('nickname').value.trim();
+
+      if (!nickname) {
+        alert("กรุณากรอกชื่อเล่นก่อนบันทึก");
+        return;
+      }
+
+      const formData = new URLSearchParams();
+      formData.append('idCard', idCard);
+      formData.append('nickname', nickname);
+      formData.append('action', 'updateNickname');
+
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formData
+        });
+
+        alert("✅ ส่งข้อมูลเรียบร้อย (แบบ no-cors)");
+        document.getElementById('statusMsg').textContent = "✔️ บันทึกชื่อเล่นแล้ว";
+      } catch (error) {
+        console.error(error);
+        alert("❌ ไม่สามารถส่งข้อมูลได้");
+      }
+    }
+  </script>
 </body>
 </html>
