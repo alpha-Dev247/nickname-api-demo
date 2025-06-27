@@ -15,7 +15,7 @@
 
   <label for="idCard">เลขประจำตัวประชาชน:</label>
   <input type="text" id="idCard" placeholder="กรอกเลขบัตรประชาชน">
-  <button onclick="searchStudent()">ค้นหา</button>
+  <button id="searchBtn">ค้นหา</button>
 
   <div id="resultSection" style="display:none;">
     <label>รหัสนักเรียน:</label>
@@ -30,7 +30,7 @@
     <label>ชื่อเล่น:</label>
     <input type="text" id="nickname">
 
-    <button onclick="saveNickname()">💾 บันทึกชื่อเล่น</button>
+    <button id="saveBtn">💾 บันทึกชื่อเล่น</button>
   </div>
 
   <p id="statusMsg"></p>
@@ -97,6 +97,10 @@
         alert("❌ ไม่สามารถส่งข้อมูลได้");
       }
     }
+
+    // ✅ ผูก event หลัง DOM โหลด
+    document.getElementById('searchBtn').addEventListener('click', searchStudent);
+    document.getElementById('saveBtn').addEventListener('click', saveNickname);
   </script>
 </body>
 </html>
