@@ -66,37 +66,35 @@
       }
     }
 
-    async function saveNickname() {
-      const idCard = document.getElementById('idCard').value.trim();
-      const nickname = document.getElementById('nickname').value.trim();
+function saveNickname() {
+  const idCard = document.getElementById("idCard").value.trim();
+  const nickname = document.getElementById("nickname").value.trim();
 
-      if (!nickname) {
-        alert("กรุณากรอกชื่อเล่นก่อนบันทึก");
-        return;
-      }
+  if (!nickname) {
+    alert("กรุณากรอกชื่อเล่นก่อนบันทึก");
+    return;
+  }
 
-      const formData = new URLSearchParams();
-      formData.append('idCard', idCard);
-      formData.append('nickname', nickname);
-      formData.append('action', 'updateNickname');
+  const formData = new URLSearchParams();
+  formData.append("idCard", idCard);
+  formData.append("nickname", nickname);
+  formData.append("action", "updateNickname");
 
-      try {
-        await fetch(API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: formData
-        });
-
-        alert("✅ ส่งข้อมูลเรียบร้อย (แบบ no-cors)");
-        document.getElementById('statusMsg').textContent = "✔️ บันทึกชื่อเล่นแล้ว";
-      } catch (error) {
-        console.error(error);
-        alert("❌ ไม่สามารถส่งข้อมูลได้");
-      }
-    }
+  fetch("https://script.google.com/macros/s/AKfycbxWy8oZXoHDLLIFmihUq3PeowAMzUCmD4hGSdvFJJJJBc_jLnZjQrHc0RCSWe64tKZj/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: formData,
+  })
+    .then(() => {
+      alert("✅ ส่งข้อมูลเรียบร้อย (แบบ no-cors)");
+    })
+    .catch((error) => {
+      console.error("❌ ส่งข้อมูลผิดพลาด", error);
+    });
+}
 
     // ✅ ผูก event หลัง DOM โหลด
     document.getElementById('searchBtn').addEventListener('click', searchStudent);
